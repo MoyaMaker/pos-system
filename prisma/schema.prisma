@@ -1,0 +1,84 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id          Int     @id @default(autoincrement())
+  name        String  @unique
+  description String?
+  unit_price  Float
+  available   Boolean @default(true)
+
+  category    Category @relation(fields: [category_id], references: [id], onDelete: Restrict)
+  category_id Int
+
+  sale_detail SaleDetail[]
+
+  inventory Inventory[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt
+
+  @@map("Products")
+}
+
+model Category {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  product Product[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt
+
+  @@map("Categories")
+}
+
+model Sale {
+  id    Int   @id @default(autoincrement())
+  total Float
+
+  sale_detail SaleDetail[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt
+
+  @@map("Sales")
+}
+
+model SaleDetail {
+  id         Int   @id @default(autoincrement())
+  unit_price Float
+  quantity   Float
+
+  product    Product @relation(fields: [product_id], references: [id], onDelete: Restrict)
+  product_id Int
+
+  sale    Sale @relation(fields: [sale_id], references: [id], onDelete: Cascade)
+  sale_id Int
+
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt
+}
+
+model Inventory {
+  id       Int   @id @default(autoincrement())
+  quantity Float
+
+  product    Product @relation(fields: [product_id], references: [id], onDelete: Restrict)
+  product_id Int
+
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt
+}
