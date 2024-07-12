@@ -20,8 +20,8 @@ model Product {
   unit_price  Float
   available   Boolean @default(true)
 
-  category    Category @relation(fields: [category_id], references: [id], onDelete: Restrict)
-  category_id Int
+  category    Category? @relation(fields: [category_id], references: [id], onDelete: Restrict)
+  category_id Int?
 
   sale_detail SaleDetail[]
 

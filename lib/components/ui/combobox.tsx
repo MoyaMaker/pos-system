@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Check, ChevronDown } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -21,52 +21,64 @@ type Option = {
   value: string;
 };
 
-type ComboboxProps = {
-  multiple?: boolean;
+type ComboboxBaseProps = {
   options: Option[];
-  /**
-   * `values` depends on `multiple` param for `string[]` or `string`
-   *
-   * @param values string[] | string
-   */
-  onChange(values: string[] | string): void;
+  disabled?: boolean;
 };
 
+type ComboboxMultipleProps = ComboboxBaseProps & {
+  multiple: true;
+  defaultValue?: string[];
+  onChange(values: string[]): void;
+};
+
+type ComboboxSingleProps = ComboboxBaseProps & {
+  multiple?: false;
+  defaultValue?: string;
+  onChange(value: string): void;
+};
+
+type ComboboxProps = ComboboxMultipleProps | ComboboxSingleProps;
+
 export function Combobox({
-  multiple = false,
+  multiple,
+  disabled,
+  defaultValue,
   options,
   onChange,
 }: ComboboxProps) {
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState("");
-  const [values, setValues] = useState<string[]>([]);
+  const [value, setValue] = useState<string>(() =>
+    !multiple ? defaultValue ?? "" : ""
+  );
+  const [values, setValues] = useState<string[]>(() =>
+    multiple ? defaultValue ?? [] : []
+  );
 
   const handleSelectAll = () => {
-    const newValues =
-      values.length === options.length ? [] : options.map((opt) => opt.value);
+    if (multiple) {
+      const newValues =
+        values.length === options.length ? [] : options.map((opt) => opt.value);
 
-    setValues(newValues);
-    onChange(newValues);
+      setValues(newValues);
+      onChange(newValues);
+    }
   };
 
-  const handleSelect = (value: string) => {
-    multiple ? handleSelectMultiple(value) : handleSelectSingle(value);
-  };
+  const handleSelect = (newValue: string) => {
+    if (multiple) {
+      const newValues = values.includes(newValue)
+        ? values.filter((v) => v !== newValue)
+        : [...values, newValue];
 
-  const handleSelectSingle = (currentValue: string) => {
-    const newValue = value === currentValue ? "" : currentValue;
-    setValue(newValue);
-    onChange(newValue);
-  };
+      onChange(newValues);
 
-  const handleSelectMultiple = (value: string) => {
-    const newValues = values.includes(value)
-      ? values.filter((v) => v !== value)
-      : [...values, value];
-
-    onChange(newValues);
-
-    setValues(newValues);
+      setValues(newValues);
+    } else {
+      const currentValue = value === newValue ? "" : newValue;
+      setValue(currentValue);
+      onChange(currentValue);
+    }
   };
 
   const multipleSelected = useMemo(() => {
@@ -79,14 +91,15 @@ export function Combobox({
   }, [options, values]);
 
   return (
-    <div className="w-[200px]">
+    <div className="w-full">
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            className="w-[200px] justify-between"
+            className="w-full justify-between"
+            disabled={disabled}
           >
             {multiple && values.length > 0
               ? multipleSelected
@@ -96,7 +109,7 @@ export function Combobox({
             <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-[200px] p-0">
+        <PopoverContent align="start" className="w-full p-0">
           <Command loop>
             <CommandInput placeholder="Search" />
             <CommandList>
