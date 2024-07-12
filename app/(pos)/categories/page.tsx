@@ -1,7 +1,16 @@
+import type { Metadata } from "next";
+
+import { CategoriesProvider } from "@/lib/providers/category-provider";
+import { TableCategories } from "./components/table-categories";
+
+export const metadata: Metadata = {
+  title: "Categorías - POS System",
+};
+
 export default function CategoriesPage() {
   return (
-    <section className="p-4">
-      <h1>Categories</h1>
-    </section>
+    <CategoriesProvider>
+      <TableCategories />
+    </CategoriesProvider>
   );
 }

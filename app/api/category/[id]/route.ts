@@ -6,8 +6,13 @@ import {
   CategoryCreateSchema,
 } from "@/lib/schema/category-schema";
 
-export async function POST(request: Request) {
+export async function PUT(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
   try {
+    const id = Number(params.id);
+
     const body = (await request.json()) as CategoryCreate;
 
     const schema = await CategoryCreateSchema.safeParseAsync(body);
@@ -29,7 +34,7 @@ export async function POST(request: Request) {
       },
     });
 
-    if (isUnique) {
+    if (isUnique && isUnique.id !== id) {
       return NextResponse.json(
         {
           message: "This category already exist",
@@ -40,24 +45,59 @@ export async function POST(request: Request) {
       );
     }
 
-    const category = await Prisma.category.create({
+    const category = await Prisma.category.update({
+      where: {
+        id,
+      },
       data: schema.data,
     });
 
     if (!category) {
       return NextResponse.json({
-        message: "Could't create the category",
+        message: "Could't update the category",
       });
     }
 
     return NextResponse.json({
-      message: "Category created",
+      message: "Category updated",
       category,
     });
   } catch (error) {
     return NextResponse.json(
       {
-        message: "Something was wrong during creation of product",
+        message: "Something was wrong updating the category",
+      },
+      {
+        status: 500,
+      }
+    );
+  }
+}
+
+export async function DELETE(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const id = Number(params.id);
+
+    const deletedCategory = await Prisma.category.delete({
+      where: {
+        id,
+      },
+    });
+
+    if (deletedCategory) {
+      return new Response(null, { status: 204 });
+    }
+
+    return NextResponse.json({
+      message: "Couldn't delete the category",
+    });
+  } catch (error) {
+    return NextResponse.json(
+      {
+        message: "Something was wrong during creation of category",
       },
       {
         status: 500,
