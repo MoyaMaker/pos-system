@@ -2,6 +2,13 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
+Set the `.env` file with this vars:
+
+```env
+DATABASE_URL="file:dev.db"
+NEXT_PUBLIC_API_URL="http://localhost:3000/api"
+```
+
 First, run the development server:
 
 ```bash
