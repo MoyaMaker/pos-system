@@ -2,9 +2,9 @@ import { NextResponse } from "next/server";
 
 import Prisma from "@/lib/prisma-db";
 import {
-  CategoryCreate,
-  CategoryCreateSchema,
-} from "@/lib/schema/category-schema";
+  ProductCreate,
+  ProductCreateSchema,
+} from "@/lib/schema/product-schema";
 
 export async function PUT(
   request: Request,
@@ -13,9 +13,9 @@ export async function PUT(
   try {
     const id = Number(params.id);
 
-    const body = (await request.json()) as CategoryCreate;
+    const body = (await request.json()) as ProductCreate;
 
-    const schema = await CategoryCreateSchema.safeParseAsync(body);
+    const schema = await ProductCreateSchema.safeParseAsync(body);
 
     if (!schema.success) {
       return NextResponse.json(
@@ -28,7 +28,7 @@ export async function PUT(
       );
     }
 
-    const isUnique = await Prisma.category.findUnique({
+    const isUnique = await Prisma.product.findUnique({
       where: {
         name: schema.data.name,
       },
@@ -37,7 +37,7 @@ export async function PUT(
     if (isUnique && isUnique.id !== id) {
       return NextResponse.json(
         {
-          message: "This category already exist",
+          message: "This product already exist",
         },
         {
           status: 409,
@@ -45,22 +45,27 @@ export async function PUT(
       );
     }
 
-    const category = await Prisma.category.update({
+    const product = await Prisma.product.update({
       where: {
         id,
       },
       data: schema.data,
     });
 
-    if (!category) {
-      return NextResponse.json({
-        message: "Could't update the category",
-      });
+    if (!product) {
+      return NextResponse.json(
+        {
+          message: "Could't update the product",
+        },
+        {
+          status: 500,
+        }
+      );
     }
 
     return NextResponse.json({
-      message: "Category updated",
-      category,
+      message: "Product updated",
+      product,
     });
   } catch (error) {
     return NextResponse.json(
@@ -81,23 +86,23 @@ export async function DELETE(
   try {
     const id = Number(params.id);
 
-    const deletedCategory = await Prisma.category.delete({
+    const deletedProduct = await Prisma.product.delete({
       where: {
         id,
       },
     });
 
-    if (deletedCategory) {
+    if (deletedProduct) {
       return new Response(null, { status: 204 });
     }
 
     return NextResponse.json({
-      message: "Couldn't delete the category",
+      message: "Couldn't delete the product",
     });
   } catch (error) {
     return NextResponse.json(
       {
-        message: "Something was wrong during creation of category",
+        message: "Something was wrong during delete of product",
       },
       {
         status: 500,

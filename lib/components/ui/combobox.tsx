@@ -105,15 +105,15 @@ export function Combobox({
               ? multipleSelected
               : !multiple && value
               ? options.find((opt) => opt.value === value)?.label
-              : "Select"}
+              : "Seleccionar"}
             <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
         <PopoverContent align="start" className="w-full p-0">
           <Command loop>
-            <CommandInput placeholder="Search" />
+            <CommandInput placeholder="Buscar" />
             <CommandList>
-              <CommandEmpty>No options found.</CommandEmpty>
+              <CommandEmpty>Sin resultados.</CommandEmpty>
 
               {multiple && (
                 <>
@@ -127,7 +127,7 @@ export function Combobox({
                             : "opacity-0"
                         )}
                       />
-                      Select all
+                      Todos
                     </CommandItem>
                   </CommandGroup>
                   <CommandSeparator />

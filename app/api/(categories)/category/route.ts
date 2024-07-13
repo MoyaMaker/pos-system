@@ -45,9 +45,14 @@ export async function POST(request: Request) {
     });
 
     if (!category) {
-      return NextResponse.json({
-        message: "Could't create the category",
-      });
+      return NextResponse.json(
+        {
+          message: "Could't create the category",
+        },
+        {
+          status: 500,
+        }
+      );
     }
 
     return NextResponse.json({
