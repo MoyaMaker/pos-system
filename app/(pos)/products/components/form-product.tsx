@@ -1,4 +1,8 @@
 "use client";
+import { SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ChevronDown } from "lucide-react";
+
 import { Button } from "@/lib/components/ui/button";
 import { Combobox } from "@/lib/components/ui/combobox";
 import {
@@ -22,16 +26,21 @@ import { Input } from "@/lib/components/ui/input";
 import { Switch } from "@/lib/components/ui/switch";
 import { Textarea } from "@/lib/components/ui/textarea";
 import {
+  Product,
   ProductCreate,
   ProductCreateSchema,
 } from "@/lib/schema/product-schema";
+import { useProducts } from "@/lib/providers/products-provider";
+import { useEffect, useMemo, useState } from "react";
+import { postProduct, putProduct } from "@/lib/services/product-service";
+import { toast } from "sonner";
 import { useGetCategories } from "@/lib/services/category-service";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { ChevronDown } from "lucide-react";
-import { SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form";
+
+const ID_TOAST = "toast_form_id";
 
 export function FormProduct() {
-  const { data, isLoading } = useGetCategories();
+  const { addData, updateData, editProduct, setEditProduct } = useProducts();
+  const { isLoading, data } = useGetCategories();
 
   const form = useForm<ProductCreate>({
     mode: "onSubmit",
@@ -39,10 +48,53 @@ export function FormProduct() {
     defaultValues: {
       name: "",
       description: "",
+      unit_price: undefined,
+      category_id: undefined,
+      available: false,
     },
   });
 
-  const onSubmit: SubmitHandler<ProductCreate> = (data) => console.log(data);
+  const [open, setOpen] = useState(false);
+
+  const isEditing = useMemo(() => !!editProduct, [editProduct]);
+
+  const onSubmit: SubmitHandler<ProductCreate> = async (data) => {
+    try {
+      toast.loading("Registrando producto", {
+        id: ID_TOAST,
+      });
+
+      const response = !isEditing
+        ? await postProduct(data)
+        : await putProduct(editProduct!.id, data);
+
+      if (response.ok) {
+        const productResponse = (await response.json()) as {
+          product: Product;
+        };
+
+        toast.success(!isEditing ? "Producto creada" : "Producto editado", {
+          id: ID_TOAST,
+        });
+
+        onReset();
+
+        if (!isEditing) {
+          addData(productResponse.product);
+        } else {
+          updateData(productResponse.product);
+        }
+
+        setOpen(false);
+      }
+    } catch (error) {
+      console.error(error);
+
+      toast.error("Hubo un error al guardar el producto", {
+        id: ID_TOAST,
+      });
+    }
+  };
 
   const onError: SubmitErrorHandler<ProductCreate> = (error, event) =>
     console.error(error, event);
@@ -52,18 +104,51 @@ export function FormProduct() {
       name: "",
       description: "",
       unit_price: undefined,
-      available: true,
+      category_id: undefined,
+      available: false,
     });
+
+    setEditProduct(undefined);
   };
 
+  useEffect(() => {
+    if (editProduct) {
+      const { name, description, unit_price, available, category_id } =
+        editProduct;
+
+      form.reset({
+        name,
+        description,
+        unit_price,
+        category_id,
+        available,
+      });
+    }
+  }, [editProduct, form]);
+
+  useEffect(() => {
+    if (isEditing) {
+      setOpen(true);
+    }
+  }, [isEditing]);
+
   return (
-    <Dialog>
+    <Dialog
+      open={open}
+      onOpenChange={(state) => {
+        setOpen(state);
+
+        onReset();
+      }}
+    >
       <DialogTrigger asChild>
         <Button>Registrar producto</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Registrar producto</DialogTitle>
+          <DialogTitle>
+            {isEditing ? "Editar producto" : "Registrar producto"}
+          </DialogTitle>
         </DialogHeader>
 
         <Form {...form}>

@@ -18,7 +18,7 @@ export const ProductSchema = z.object({
   }),
   available: z.boolean().default(true),
   category: CategorySchema,
-  category_id: z.number().optional(),
+  category_id: z.coerce.number().optional(),
   // sale_detail: SaleDetailSchema,
   // inventory: z.object({}),
   created_at: z.string(),

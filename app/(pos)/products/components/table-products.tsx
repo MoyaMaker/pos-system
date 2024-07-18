@@ -1,21 +1,21 @@
 "use client";
 
-import { useCategories } from "@/lib/providers/category-provider";
-import { columns } from "./columns";
-import { DataTable } from "./data-table";
+import { useProducts } from "@/lib/providers/products-provider";
 import { TableLoading } from "@/lib/components/table-loading";
+import { DataTable } from "./data-table";
+import { columns } from "./columns";
 
-export function TableCategories() {
-  const { data, isLoading } = useCategories();
+export function TableProducts() {
+  const { data, isLoading } = useProducts();
 
   return (
     <section className="p-4">
       <header>
         <h1 className="text-xl font-medium">
-          Categorías{" "}
-          {data && data.categories && (
+          Productos{" "}
+          {data && data.products && (
             <span className="text-base text-muted-foreground">
-              ({data.categories.length})
+              ({data.products.length})
             </span>
           )}
         </h1>
@@ -23,7 +23,7 @@ export function TableCategories() {
 
       {isLoading && !data && <TableLoading />}
       {!isLoading && data && (
-        <DataTable columns={columns} data={data!.categories} />
+        <DataTable columns={columns} data={data!.products} />
       )}
     </section>
   );

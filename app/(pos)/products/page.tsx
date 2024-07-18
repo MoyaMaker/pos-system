@@ -1,11 +1,16 @@
-import { FormProduct } from "./components/form-product";
+import type { Metadata } from "next";
+
+import { ProductsProvider } from "@/lib/providers/products-provider";
+import { TableProducts } from "./components/table-products";
+
+export const metadata: Metadata = {
+  title: "Productos - POS System",
+};
 
 export default function ProductsPage() {
   return (
-    <section className="p-4">
-      <h1>Product page</h1>
-
-      <FormProduct />
-    </section>
+    <ProductsProvider>
+      <TableProducts />
+    </ProductsProvider>
   );
 }
