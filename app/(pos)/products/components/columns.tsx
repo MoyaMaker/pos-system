@@ -22,6 +22,7 @@ import { useProducts } from "@/lib/providers/products-provider";
 import { deleteProduct } from "@/lib/services/product-service";
 import { Badge } from "@/lib/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { currencyFormat } from "@/lib/utils/currency-format";
 
 export const columns: ColumnDef<Product>[] = [
   {
@@ -50,18 +51,53 @@ export const columns: ColumnDef<Product>[] = [
   },
   {
     accessorKey: "unit_price",
-    header: "Precio unitario",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Precio unitario
+          {!column.getIsSorted() && <ArrowUpDown className="ml-2 h-4 w-4" />}
+          {column.getIsSorted() === "asc" && (
+            <MoveUp className="ml-2 h-4 w-4" />
+          )}
+          {column.getIsSorted() === "desc" && (
+            <MoveDown className="ml-2 h-4 w-4" />
+          )}
+        </Button>
+      );
+    },
+    cell: ({ row }) => currencyFormat(row.original.unit_price),
   },
   {
     accessorKey: "available",
-    header: "Disponible",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Disponible
+          {!column.getIsSorted() && <ArrowUpDown className="ml-2 h-4 w-4" />}
+          {column.getIsSorted() === "asc" && (
+            <MoveUp className="ml-2 h-4 w-4" />
+          )}
+          {column.getIsSorted() === "desc" && (
+            <MoveDown className="ml-2 h-4 w-4" />
+          )}
+        </Button>
+      );
+    },
     cell: ({ row }) => {
       const value = row.getValue("available");
 
       return (
         <Badge
           variant={value ? "default" : "destructive"}
-          className={cn(value ? "bg-green-700 text-white" : "")}
+          className={cn(
+            value ? "bg-green-700 text-white hover:bg-green-700/80" : ""
+          )}
         >
           {value ? "Disponible" : "No disponible"}
         </Badge>

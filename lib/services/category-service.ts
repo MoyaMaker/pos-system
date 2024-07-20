@@ -1,6 +1,28 @@
 import useSWR from "swr";
 import { Category, CategoryCreate } from "../schema/category-schema";
 
+export const useGetCategoriesProducts = () => {
+  const { data, error, isLoading, isValidating, mutate } = useSWR<{
+    categories: Category[];
+  }>(
+    `/api/categories-products`,
+    (url) => fetch(url).then((res) => res.json()),
+    {
+      revalidateIfStale: false,
+      revalidateOnReconnect: false,
+      revalidateOnFocus: false,
+    }
+  );
+
+  return {
+    data,
+    error,
+    isLoading,
+    isValidating,
+    mutate,
+  };
+};
+
 export const useGetCategories = () => {
   const { data, error, isLoading, isValidating, mutate } = useSWR<{
     categories: Category[];

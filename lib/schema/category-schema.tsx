@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { Product } from "./product-schema";
 
 export const CategorySchema = z.object({
   id: z.number(),
@@ -14,7 +15,9 @@ export const CategorySchema = z.object({
   updated_at: z.string(),
 });
 
-export type Category = z.infer<typeof CategorySchema>;
+export type Category = z.infer<typeof CategorySchema> & {
+  product: Product[];
+};
 
 export const CategoryCreateSchema = CategorySchema.pick({
   name: true,
