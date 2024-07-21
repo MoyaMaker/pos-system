@@ -11,6 +11,7 @@ export const useGetCategoriesProducts = () => {
       revalidateIfStale: false,
       revalidateOnReconnect: false,
       revalidateOnFocus: false,
+      revalidateOnMount: true,
     }
   );
 

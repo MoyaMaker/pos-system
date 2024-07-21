@@ -9,8 +9,8 @@ export function TableProducts() {
   const { data, isLoading } = useProducts();
 
   return (
-    <section className="p-4">
-      <header>
+    <section className="w-full p-4">
+      <header className="w-full">
         <h1 className="text-xl font-medium">
           Productos{" "}
           {data && data.products && (
