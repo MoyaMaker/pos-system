@@ -1,13 +1,15 @@
 "use client";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
   flexRender,
   getCoreRowModel,
+  getExpandedRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
+  Row,
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
@@ -32,16 +34,21 @@ import {
 import { Separator } from "@/lib/components/ui/separator";
 import { Button } from "@/lib/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Product } from "@/lib/schema/product-schema";
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
+interface DataTableProps {
+  columns: ColumnDef<Product>[];
+  data: Product[];
+  renderSubComponent: (props: { row: Row<Product> }) => React.ReactElement;
+  getRowCanExpand: (row: Row<Product>) => boolean;
 }
 
-export function DataTable<TData, TValue>({
+export function DataTable({
   columns,
   data,
-}: DataTableProps<TData, TValue>) {
+  renderSubComponent,
+  getRowCanExpand,
+}: DataTableProps) {
   const [sorting, setSorting] = useState<SortingState>([
     {
       id: "created_at",
@@ -53,12 +60,14 @@ export function DataTable<TData, TValue>({
   const table = useReactTable({
     data,
     columns,
+    getRowCanExpand,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    getExpandedRowModel: getExpandedRowModel(),
     state: {
       sorting,
       columnFilters,
@@ -103,19 +112,26 @@ export function DataTable<TData, TValue>({
             {table.getRowModel().rows?.length ? (
               <>
                 {table.getRowModel().rows.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    data-state={row.getIsSelected() && "selected"}
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
-                    ))}
-                  </TableRow>
+                  <Fragment key={row.id}>
+                    <TableRow data-state={row.getIsSelected() && "selected"}>
+                      {row.getVisibleCells().map((cell) => (
+                        <TableCell key={cell.id}>
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+
+                    {row.getIsExpanded() && (
+                      <TableRow>
+                        <TableCell colSpan={row.getVisibleCells().length}>
+                          {renderSubComponent({ row })}
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </Fragment>
                 ))}
                 {/* Empty rows for sizing table */}
                 {Array.from(

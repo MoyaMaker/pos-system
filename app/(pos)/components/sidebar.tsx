@@ -47,7 +47,7 @@ export function Sidebar() {
   return (
     <aside
       className={cn(
-        "flex flex-col row-start-1 row-span-2 p-4 border-r",
+        "h-dvh flex flex-col p-4 border-r",
         open ? "w-[250px]" : ""
       )}
     >
