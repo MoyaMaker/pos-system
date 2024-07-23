@@ -9,8 +9,6 @@ import {
   CircleAlert,
   CircleCheck,
   MoreHorizontal,
-  ChevronDown,
-  ChevronUp,
   Info,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -66,7 +64,6 @@ export const columns: ColumnDef<Product>[] = [
         </div>
       );
     },
-    // header: "Nombre",
   },
   {
     accessorKey: "description",
