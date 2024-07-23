@@ -1,7 +1,7 @@
 "use client";
 import { SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Plus } from "lucide-react";
 
 import { Button } from "@/lib/components/ui/button";
 import { Combobox } from "@/lib/components/ui/combobox";
@@ -142,7 +142,10 @@ export function FormProduct() {
       }}
     >
       <DialogTrigger asChild>
-        <Button>Registrar producto</Button>
+        <Button>
+          <Plus className="w-4 h-4" />
+          <span className="max-md:hidden">Registrar producto</span>
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

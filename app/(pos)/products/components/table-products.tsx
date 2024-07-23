@@ -1,18 +1,18 @@
 "use client";
+import { Row } from "@tanstack/react-table";
 
 import { useProducts } from "@/lib/providers/products-provider";
 import { TableLoading } from "@/lib/components/table-loading";
 import { DataTable } from "./data-table";
 import { columns } from "./columns";
 import { Product } from "@/lib/schema/product-schema";
-import { Row } from "@tanstack/react-table";
 import { dateFormat } from "@/lib/utils/date-format";
 
 export function TableProducts() {
   const { data, isLoading } = useProducts();
 
   return (
-    <section className="p-4">
+    <section className="w-full min-h-dvh p-4 overflow-auto">
       <header className="w-full">
         <h1 className="text-xl font-medium">
           Productos{" "}
@@ -39,7 +39,7 @@ export function TableProducts() {
 
 const renderSubComponent = ({ row }: { row: Row<Product> }) => {
   return (
-    <div className="flex gap-6">
+    <div className="flex gap-6 bg-white/10 p-4">
       <div className="grid">
         <span className="text-xs text-muted-foreground">Fecha de creación</span>
         <span className="text-sm">{dateFormat(row.original.created_at)}</span>

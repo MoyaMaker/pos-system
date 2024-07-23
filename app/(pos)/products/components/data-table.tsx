@@ -76,7 +76,7 @@ export function DataTable({
 
   return (
     <div className="w-full">
-      <div className="flex justify-between items-center py-4">
+      <div className="flex justify-between items-center gap-2 py-4">
         <Input
           placeholder="Buscar"
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
@@ -126,7 +126,10 @@ export function DataTable({
 
                     {row.getIsExpanded() && (
                       <TableRow>
-                        <TableCell colSpan={row.getVisibleCells().length}>
+                        <TableCell
+                          colSpan={row.getVisibleCells().length}
+                          className="p-0"
+                        >
                           {renderSubComponent({ row })}
                         </TableCell>
                       </TableRow>
@@ -167,12 +170,12 @@ export function DataTable({
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-4 py-4">
+      <div className="flex items-center justify-end flex-wrap gap-4 py-4">
         <div className="text-sm text-muted-foreground">
           Productos registrados: {table.getFilteredRowModel().rows.length}
         </div>
-        <Separator orientation="vertical" className="h-6" />
-        <div className="flex-1 flex items-center gap-2 text-sm text-muted-foreground">
+        <Separator orientation="vertical" className="h-6 max-md:hidden" />
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <label
             htmlFor="rows-per-page"
             className="text-sm text-muted-foreground"

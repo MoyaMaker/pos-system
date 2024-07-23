@@ -47,52 +47,53 @@ export const columns: ColumnDef<Product>[] = [
     accessorKey: "name",
     header: ({ column }) => {
       return (
-        <Button
-          variant="ghost"
-          size="sm"
-          className="w-full whitespace-break-spaces justify-start"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Nombre
-          {!column.getIsSorted() && <ArrowUpDown className="ml-2 h-4 w-4" />}
-          {column.getIsSorted() === "asc" && (
-            <MoveUp className="ml-2 h-4 w-4" />
-          )}
-          {column.getIsSorted() === "desc" && (
-            <MoveDown className="ml-2 h-4 w-4" />
-          )}
-        </Button>
+        <div>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="justify-start"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Nombre
+            {!column.getIsSorted() && <ArrowUpDown className="ml-2 h-4 w-4" />}
+            {column.getIsSorted() === "asc" && (
+              <MoveUp className="ml-2 h-4 w-4" />
+            )}
+            {column.getIsSorted() === "desc" && (
+              <MoveDown className="ml-2 h-4 w-4" />
+            )}
+          </Button>
+        </div>
       );
     },
+    // header: "Nombre",
   },
   {
     accessorKey: "description",
-    header: () => (
-      <>
-        <span className="xl:hidden">Desc.</span>
-        <span className="hidden xl:inline-block">Descripción</span>
-      </>
-    ),
+    header: "Descripción",
   },
   {
     accessorKey: "unit_price",
+    enableHiding: true,
     header: ({ column }) => {
       return (
-        <Button
-          variant="ghost"
-          size="sm"
-          className="w-full whitespace-break-spaces justify-start"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Precio
-          {!column.getIsSorted() && <ArrowUpDown className="ml-2 h-4 w-4" />}
-          {column.getIsSorted() === "asc" && (
-            <MoveUp className="ml-2 h-4 w-4" />
-          )}
-          {column.getIsSorted() === "desc" && (
-            <MoveDown className="ml-2 h-4 w-4" />
-          )}
-        </Button>
+        <div>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="justify-start"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Precio
+            {!column.getIsSorted() && <ArrowUpDown className="ml-2 h-4 w-4" />}
+            {column.getIsSorted() === "asc" && (
+              <MoveUp className="ml-2 h-4 w-4" />
+            )}
+            {column.getIsSorted() === "desc" && (
+              <MoveDown className="ml-2 h-4 w-4" />
+            )}
+          </Button>
+        </div>
       );
     },
     cell: ({ row }) => currencyFormat(row.original.unit_price),
@@ -101,21 +102,23 @@ export const columns: ColumnDef<Product>[] = [
     accessorKey: "available",
     header: ({ column }) => {
       return (
-        <Button
-          variant="ghost"
-          size="sm"
-          className="w-full whitespace-break-spaces justify-start"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Disponible
-          {!column.getIsSorted() && <ArrowUpDown className="ml-2 h-4 w-4" />}
-          {column.getIsSorted() === "asc" && (
-            <MoveUp className="ml-2 h-4 w-4" />
-          )}
-          {column.getIsSorted() === "desc" && (
-            <MoveDown className="ml-2 h-4 w-4" />
-          )}
-        </Button>
+        <div>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="justify-start"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Disponible
+            {!column.getIsSorted() && <ArrowUpDown className="ml-2 h-4 w-4" />}
+            {column.getIsSorted() === "asc" && (
+              <MoveUp className="ml-2 h-4 w-4" />
+            )}
+            {column.getIsSorted() === "desc" && (
+              <MoveDown className="ml-2 h-4 w-4" />
+            )}
+          </Button>
+        </div>
       );
     },
     cell: ({ row }) => {
@@ -141,13 +144,37 @@ export const columns: ColumnDef<Product>[] = [
     accessorKey: "category",
     header: ({ column }) => {
       return (
+        <div>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="justify-start"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Categoría
+            {!column.getIsSorted() && <ArrowUpDown className="ml-2 h-4 w-4" />}
+            {column.getIsSorted() === "asc" && (
+              <MoveUp className="ml-2 h-4 w-4" />
+            )}
+            {column.getIsSorted() === "desc" && (
+              <MoveDown className="ml-2 h-4 w-4" />
+            )}
+          </Button>
+        </div>
+      );
+    },
+    cell: ({ row }) => row.original.category?.name,
+  },
+  {
+    accessorKey: "created_at",
+    header: ({ column }) => {
+      return (
         <Button
           variant="ghost"
-          size="sm"
-          className="w-full whitespace-break-spaces justify-start"
+          className="justify-start"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Categoría
+          Fecha de creación
           {!column.getIsSorted() && <ArrowUpDown className="ml-2 h-4 w-4" />}
           {column.getIsSorted() === "asc" && (
             <MoveUp className="ml-2 h-4 w-4" />
@@ -158,7 +185,29 @@ export const columns: ColumnDef<Product>[] = [
         </Button>
       );
     },
-    cell: ({ row }) => row.original.category?.name,
+    cell: ({ row }) => dateFormat(row.original.created_at),
+  },
+  {
+    accessorKey: "updated_at",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          className="justify-start"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Fecha de actualización
+          {!column.getIsSorted() && <ArrowUpDown className="ml-2 h-4 w-4" />}
+          {column.getIsSorted() === "asc" && (
+            <MoveUp className="ml-2 h-4 w-4" />
+          )}
+          {column.getIsSorted() === "desc" && (
+            <MoveDown className="ml-2 h-4 w-4" />
+          )}
+        </Button>
+      );
+    },
+    cell: ({ row }) => dateFormat(row.original.updated_at),
   },
   {
     id: "actions",
