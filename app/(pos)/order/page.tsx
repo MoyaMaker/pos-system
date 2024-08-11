@@ -63,7 +63,7 @@ export default function OrderPage() {
         )}
       </div>
 
-      <div className="grid grid-cols-3 lg:grid-cols-4 gap-4 mt-6">
+      <div className="grid grid-cols-3 lg:grid-cols-4 2xl:grid-cols-6 gap-4 mt-6">
         {isLoading && (
           <>
             <Skeleton className="w-60 h-32" />

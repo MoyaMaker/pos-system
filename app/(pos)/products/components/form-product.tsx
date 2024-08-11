@@ -143,7 +143,7 @@ export function FormProduct() {
     >
       <DialogTrigger asChild>
         <Button>
-          <Plus className="w-4 h-4" />
+          <Plus className="w-4 h-4 md:mr-2" />
           <span className="max-md:hidden">Registrar producto</span>
         </Button>
       </DialogTrigger>
